@@ -1,0 +1,19 @@
+<a href="#dates" onclick="return toggleDate('<% $d %>')" class="<% $a ? "available" : "busy" %>"><% $n %></a>
+<%args>
+$d => undef
+$mon => undef
+$y => undef
+
+$a => undef
+</%args>
+<%init>
+my $n;
+if (ref $d) {
+  $a = $d->available;
+  $d = $d->day;
+  $n = (split /-/, $d)[2] + 0;
+} else {
+  $n = $d;
+  $d = sprintf("%4d-%02d-%02d",$y, $mon, $d);
+}
+</%init>

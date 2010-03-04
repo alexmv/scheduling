@@ -1,0 +1,39 @@
+<%init>
+Class::DBI->clear_object_index;
+
+local *session unless $m->is_subrequest; # avoid reentrancy, as suggested by masonbook
+
+use CGI::Cookie;
+use CGI::Session;
+my %cookies = CGI::Cookie->fetch;
+my $sid = $cookies{session} ? $cookies{session}->value : undef;
+my $session = CGI::Session->new(undef, $sid,
+                             {Directory => "/tmp",
+                              IDFile      => '/tmp/cgisession.id',
+                             });
+$session->expire('+1d');
+
+# Feed the session back to the browser
+my $cookie = new CGI::Cookie(-name => 'session', -value => $session->id);
+$r->header_out('Set-Cookie' => $cookie->as_string);
+
+# HTTPS is a valid way of logging on
+if ($m->base_comp->name =~ /\.(css|js)$/) {
+  $m->call_next(%ARGS);
+} elsif (($ENV{HTTPS} and $ENV{SSL_CLIENT_S_DN_Email}) or $ARGS{krb} or $session->param('krb')) {
+  lc($ENV{SSL_CLIENT_S_DN_Email}) =~ /(.*)\@/;
+  my ($krb) = ($1 || lc($ARGS{krb}) || lc($session->param('krb')));
+  $session->param(krb => $krb);
+
+  my $u;
+  $u = Schedule::Users->find_or_create({email => $krb});
+  $r->pnotes(user => $u);
+
+  my @games = $u->games;
+  Schedule::Games::update_from_blanche() unless scalar @games;
+
+  $m->call_next(%ARGS);
+} else {
+  $m->comp("Elements/Login");
+}
+</%init>

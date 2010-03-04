@@ -1,0 +1,64 @@
+<&| /Elements/Wrapper, title => $game->name." scheduling" &>
+<h2>Times</h2>
+<table>
+<tr><td class="corner"></td>
+% for (0..6) {
+<th><% $days[$_] %></th>
+% }
+ </tr>
+
+% for my $hour (11 .. 26) {
+<tr>
+<th><% $hour %></th>
+%   for my $day (0..6) {
+      <td class="<% $times[$hour][$day]{Possible} and 'possible' %> <% $times[$hour][$day]{Impossible} and 'impossible' %>" title="<% $times[$hour][$day]{Message} %>"><% $times[$hour][$day]{Available} %></td>
+%   }
+    </tr>
+% }
+</table>
+
+
+<h2>Dates</h2>
+% for my $add (0..5) {
+%   my $time = parsedate("+$add months");
+%   my $mon  = (localtime($time))[4] + 1;
+%   my @cal  = $game->dates($time);
+
+    <table>
+      <tr><th colspan="7"><% $months[$mon - 1] %></th></tr>
+      <tr>
+%       for (0..6) {
+          <th><% $days[$_] %></th>
+%       }
+      </tr>
+%     my $day = 1;
+%     for my $r (@cal) {
+        <tr>
+%         for my $d (@{$r}) {
+%           if ($d) {
+              <td class="<% $d->{Possible} and 'possible' %> <% $d->{Impossible} and 'impossible' %>" title="<% $d->{Message} %>"><div class="day"><% $day %></div><% $d->{Available} %></td>
+%             $day++;
+%           } else {
+              <td></td>
+%           }
+%         }
+        </tr>
+%     }
+    </table><br />
+% }
+
+
+</&>
+<%init>
+my @months = qw(January February March April May June July August
+                September October November December);
+my @days = qw/Sunday Monday Tuesday Wednesday Thursday Friday Saturday/;
+
+my ($name) = $m->dhandler_arg =~ /(.*)\./;
+
+my $game = Schedule::Games->named($name)
+ or $m->redirect(Apache->request->dir_config('Path') . "/");
+
+my @times = $game->times;
+
+</%init>

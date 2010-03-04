@@ -1,0 +1,15 @@
+<a href="#" onclick="return toggleTime(<% $h %>,<% $d %>)" class="<% $a ? "available" : "busy" %>"><% $a ? "Yes" : "No" %></a>
+<%args>
+$t => undef
+
+$h => undef
+$d => undef
+$a => undef
+</%args>
+<%init>
+if ($t) {
+  $h = $t->hour;
+  $d = $t->weekday;
+  $a = $t->available;
+}
+</%init>

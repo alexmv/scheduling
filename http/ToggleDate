@@ -1,0 +1,10 @@
+<& /Elements/ShowDate, d => $d &>
+<%args>
+$d
+</%args>
+<%init>
+$d = Schedule::Dates->find_or_create({user => $r->pnotes("user")->id,
+                                      day  => $d});
+$d->available(not $d->available);
+$d->update;
+</%init>

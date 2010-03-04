@@ -1,0 +1,72 @@
+<&| /Elements/Wrapper, title => "Scheduling" &>
+<h2>Times</h2>
+<table>
+<tr><td style="background: #000000"></td>
+% for (0..6) {
+<th><% $days[$_] %></th>
+% }
+</tr>
+
+% for my $hour (11 .. 26) {
+<tr>
+<th><% $hour %></th>
+%   for my $day (0..6) {
+%     my @present = grep {$times[$hour][$day]{$_->email}} @users;
+%     my @missing = grep {not $times[$hour][$day]{$_->email} and $_->required} @users;
+      <td <% @missing or @present < 7 ? '' : 'style="background: #000066"' %> title="<% join ", ", map {$_->email} @present %>"><% scalar @present %></td>
+%   }
+    </tr>
+% }
+</table>
+
+
+<h2>Dates</h2>
+% for my $add (0..2) {
+%   my $time = parsedate("+$add months");
+%   my $mon  = (localtime($time))[4] + 1;
+%   my $year = (localtime($time))[5] + 1900;
+%   my @cal = calendar($mon, $year);
+
+    <table>
+      <tr><th colspan="7"><% $months[$mon - 1] %></th></tr>
+      <tr>
+%       for (0..6) {
+          <th><% $days[$_] %></th>
+%       }
+      </tr>
+
+%     for my $r (@cal) {
+        <tr>
+%         for my $d (@{$r}) {
+%           if ($d) {
+%             my $s = sprintf("%4d-%02d-%02d", $year, $mon, $d);
+%             my @present = grep {not exists $dates{$s}{$_->email} or $dates{$s}{$_->email}} @users;
+%             my @missing = grep {exists $dates{$s}{$_->email} and not $dates{$s}{$_->email} and $_->required} @users;
+              <td title="missing <% join(", ", map {$_->email} grep {exists $dates{$s}{$_->email} and not $dates{$s}{$_->email}} @users) %>" <% @missing or @present < 7 ? '' : 'style="background: #000066"' %>><% scalar @present %></td>
+%           } else {
+              <td></td>
+%           }
+%         }
+        </tr>
+%     }
+    </table><br />
+% }
+
+
+</&>
+<%init>
+my @months = qw(January February March April May June July August
+                September October November December);
+my @days = qw/Sunday Monday Tuesday Wednesday Thursday Friday Saturday/;
+
+my @times;
+for (Schedule::Times->search(available => 1)) {
+  $times[$_->hour][$_->weekDay]{$_->user->email} = 1;
+}
+
+my @users = Schedule::Users->retrieve_all;
+my %dates;
+for (Schedule::Dates->retrieve_all) {
+  $dates{$_->day}{$_->user->email} = $_->available;
+}
+</%init>

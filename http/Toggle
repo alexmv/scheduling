@@ -1,0 +1,12 @@
+<& /Elements/ShowTime, t => $t &>
+<%args>
+$h
+$d
+</%args>
+<%init>
+my $t = Schedule::Times->find_or_create({user => $r->pnotes("user")->id,
+                                         hour => $h,
+                                         weekday => $d});
+$t->available(not $t->available);
+$t->update;
+</%init>

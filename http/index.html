@@ -1,0 +1,82 @@
+<&| /Elements/Wrapper, title => "Scheduling" &>
+<p>This is an attempt to make scheduling for gaming runs and other
+such things a little easier.  Please update the generalized times of
+the week that you would be free, as well as specific days that are
+right out.</p>
+
+<p>Click on the individual cells to toggle them, or the row or column
+headings to toggle the whole row or column.  Brought to you by the
+power of Web 2.0!</p>
+
+% for ($r->pnotes("user")->games) {
+<h3><a href="view/<% $_->name %>.html"><% $_->name %> schedule</a></h3>
+% }
+
+<h2>Times</h2>
+<table>
+<tr><td style="background: #000000"></td>
+% for (0..6) {
+<th><a href="ToggleWeekDay?d=<% $_ %>"><% $days[$_] %></a></th>
+% }
+</tr>
+
+% for my $hour (11 .. 26) {
+<tr>
+<th><a href="ToggleHour?h=<% $hour %>"><% $hour %></a></th>
+% for my $day (0..6) {
+<td id="h.<% $hour %>.<% $day %>"><& /Elements/ShowTime, h => $hour, d => $day, a => $times[$hour][$day] &></td>
+% }
+</tr>
+% }
+</table>
+
+<h2>Dates</h2><a name="dates" />
+% for my $add (0..5) {
+% my $time = parsedate("+$add months");
+% my $mon  = (localtime($time))[4] + 1;
+% my $year = (localtime($time))[5] + 1900;
+% my @cal = calendar($mon, $year);
+
+<table>
+<tr><th colspan="7"><% $months[$mon - 1] %></th></tr>
+<tr>
+% for (0..6) {
+<th><% $days[$_] %></th>
+% }
+</tr>
+
+% for my $r (@cal) {
+<tr>
+% for my $d (@{$r}) {
+% if ($d) {
+% my $printed = sprintf("%4d-%02d-%02d", $year, $mon, $d);
+<td id="d.<% $printed %>">
+<& /Elements/ShowDate, d => $d, mon => $mon, y => $year, a => exists $dates{$printed} ? $dates{$printed} : 1 &>
+</td>
+% } else {
+<td></td>
+% }
+% }
+</tr>
+% }
+</table><br />
+% }
+
+<p>There's no submit button -- all of the above is updated in real-time.</p>
+
+</&>
+<%init>
+my @months = qw(January February March April May June July August
+                September October November December);
+my @days = qw/Sunday Monday Tuesday Wednesday Thursday Friday Saturday/;
+
+my @times;
+for ($r->pnotes("user")->times) {
+  $times[$_->hour][$_->weekday] = $_->available;
+}
+
+my %dates;
+for ($r->pnotes("user")->dates) {
+  $dates{$_->day} = $_->available;
+}
+</%init>

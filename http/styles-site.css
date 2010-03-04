@@ -1,0 +1,101 @@
+body {
+  margin:  0;
+  padding: 0;
+  background: #333333;
+  color:      #000000;
+  padding-bottom: 240px;
+}
+
+#content {
+  position: relative;
+  width: 700px;
+  margin: 10px auto;
+  padding: 0 1em 1em;
+  background: #000000;
+  color: #cccccc;
+  border: 2px solid #000066;
+  clear: both;
+}
+
+h1 {
+  margin: 0 -0.5em 0.5em;
+  padding: 0 0.5em;
+  border-top: 1px dotted #003366;
+  border-bottom: 1px dotted #003366;
+  background: #000033;
+  color: #999999;
+}
+
+h2 {
+  margin: 1em 0 0.5em 0;
+  padding: 0;
+  border-bottom: 1px dotted #000099;
+  background: #000033;
+  color: #9999cc;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+th {
+  background: #000033;
+  padding: 0 0.5em;
+}
+
+th a {
+  color: #cccccc;
+  text-align: center;
+  text-decoration: none;
+}
+
+th + th, td + th, td + td, th + td {
+  border-left: 1px dotted #003366;
+}
+
+tr:hover {
+  background: #000033;
+}
+
+td {
+  text-align: center;
+}
+
+td a {
+  width: 100%;
+  color: #cccccc;
+  text-decoration: none;
+  display: block;
+}
+
+.busy { color: #cc6666; }
+.available { color: #ffffff; font-weight: bold; }
+
+td.possible { background: #000066; }
+td.impossible { background: #110000; color: #ff3333; }
+
+td.corner {
+  background: none;
+}
+
+td .day {
+  font-size: 60%;
+  width: 2em;
+  border-bottom: 1px dotted #003366;
+  border-right: 1px dotted #003366;
+  float: left;
+  padding: 0;
+  color: #cccccc;
+}
+
+td.impossible .day {
+  border-bottom: 1px dotted #660000;
+  border-right: 1px dotted #660000;
+}

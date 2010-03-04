@@ -1,0 +1,36 @@
+<%doc>
+
+Sets up the basic wrapper around normal HTML content, including
+headers, javascript, stylesheets, and footer.
+
+</%doc>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+  <title><% $title %> - Scheduling</title>
+
+  <link rel="stylesheet" href="<% Apache->request->dir_config('Path') %>/styles-site.css" type="text/css" />
+  <script type="text/javascript" src="<% Apache->request->dir_config('Path') %>/toggle.js"></script>
+</head>
+
+<body>
+
+<div id="content">
+
+<h1><% $header || $title %></h1>
+
+<% $m->content |n %>
+
+</div>
+
+</body>
+</html>
+
+<%args>
+$title
+$header => ""
+</%args>

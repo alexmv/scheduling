@@ -1,0 +1,9 @@
+<&| Wrapper, title => "Log in" &>
+
+<form action="<% Apache->request->dir_config('Path') %>/index.html" method="GET">
+<div>Kerberos username:</div>
+<input type="text" name="krb" size="10" /> 
+<input type="submit" value="Log in" />
+</form>
+
+</&>

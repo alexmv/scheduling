@@ -1,0 +1,12 @@
+# N.B. -- this is not a complete apache.conf, merely the site-specific
+# changes which are needed to make the agenda server run.
+
+<Perl>
+  use lib '/home/chmrr/prog/scheduling/lib';
+</Perl>
+PerlRequire /home/chmrr/prog/scheduling/startup.pl
+
+SetHandler perl-script
+PerlHandler HTML::Mason::ApacheHandler
+PerlSetVar MasonCompRoot /var/www/www.chmrr.net/scheduling/
+PerlSetVar Path /scheduling

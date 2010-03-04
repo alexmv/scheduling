@@ -1,0 +1,13 @@
+<%args>
+$d
+</%args>
+<%init>
+for (1..26) {
+  my $t = Schedule::Times->find_or_create({user => $r->pnotes("user")->id,
+                                           hour => $_,
+                                           weekday => $d});
+  $t->available(not $t->available);
+  $t->update;
+}
+$m->redirect(Apache->request->dir_config('Path') . "/");
+</%init>
